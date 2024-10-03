@@ -1,4 +1,4 @@
-Simple leaderboard/scoreboard collector.
+Simple Screeps seasonal leaderboard/scoreboard collector.
 
 ```sh
 cp .example-screeps.yaml .screeps.yaml
