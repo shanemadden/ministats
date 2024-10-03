@@ -1,0 +1,2 @@
+INFLUX_ADMIN_PASSWORD=insecure
+INFLUX_ADMIN_TOKEN=insecure-token

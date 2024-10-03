@@ -22,11 +22,11 @@ services:
     environment:
       DOCKER_INFLUXDB_INIT_MODE: setup
       DOCKER_INFLUXDB_INIT_USERNAME: admin
-      DOCKER_INFLUXDB_INIT_PASSWORD: insecure
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUX_ADMIN_PASSWORD:?required}
       DOCKER_INFLUXDB_INIT_ORG: season
       DOCKER_INFLUXDB_INIT_BUCKET: stats
       DOCKER_INFLUXDB_INIT_RETENTION: 1825d
-      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: insecure-token
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUX_ADMIN_TOKEN:?required}
 
   # default login: admin/admin
   grafana:

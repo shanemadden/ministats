@@ -1,0 +1,7 @@
+servers:
+  season:
+    host: screeps.com
+    secure: true
+    token: your-token-here
+    path: /season
+    branch: default
