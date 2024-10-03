@@ -1,22 +1,21 @@
 services:
   scraper:
     image: node:20
-    #restart: always
+    restart: always
     volumes:
       - ./package.json:/package.json
-      - ./node_modules:/node_modules
       - ./.screeps.yaml:/.screeps.yaml
       - ./scraper.js:/scraper.js
     command: >
-      npm run scraper
-      --
+      bash -c "npm install && npm run scraper --
       --server season
-      --influx influxdb
+      --influx influxdb"
     environment:
       DEBUG: screepsapi:ratelimit
 
   influxdb:
     image: influxdb:2
+    restart: always
     volumes:
       - influx-data:/var/lib/influxdb2
       - influx-config:/etc/influxdb2
@@ -29,8 +28,10 @@ services:
       DOCKER_INFLUXDB_INIT_RETENTION: 1825d
       DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: insecure-token
 
+  # default login: admin/admin
   grafana:
     image: grafana/grafana-oss
+    restart: always
     ports:
       - 3000:3000/tcp
     volumes:
