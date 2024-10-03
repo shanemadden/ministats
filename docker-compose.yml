@@ -1,0 +1,42 @@
+services:
+  scraper:
+    image: node:20
+    #restart: always
+    volumes:
+      - ./package.json:/package.json
+      - ./node_modules:/node_modules
+      - ./.screeps.yaml:/.screeps.yaml
+      - ./scraper.js:/scraper.js
+    command: >
+      npm run scraper
+      --
+      --server season
+      --influx influxdb
+    environment:
+      DEBUG: screepsapi:ratelimit
+
+  influxdb:
+    image: influxdb:2
+    volumes:
+      - influx-data:/var/lib/influxdb2
+      - influx-config:/etc/influxdb2
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: insecure
+      DOCKER_INFLUXDB_INIT_ORG: season
+      DOCKER_INFLUXDB_INIT_BUCKET: stats
+      DOCKER_INFLUXDB_INIT_RETENTION: 1825d
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: insecure-token
+
+  grafana:
+    image: grafana/grafana-oss
+    ports:
+      - 3000:3000/tcp
+    volumes:
+      - grafana-data:/var/lib/grafana
+
+volumes:
+  influx-data:
+  influx-config:
+  grafana-data:

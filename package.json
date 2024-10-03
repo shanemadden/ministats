@@ -1,0 +1,23 @@
+{
+  "name": "ministats",
+  "version": "0.1.0",
+  "description": "Screeps simple seasonal stats fetcher",
+  "scripts": {
+    "scraper": "node scraper.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shanemadden/ministats.git"
+  },
+  "author": "Shane Madden",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shanemadden/ministats/issues"
+  },
+  "homepage": "https://github.com/shanemadden/ministats",
+  "devDependencies": {
+    "@influxdata/influxdb-client": "^1.35.0",
+    "screeps-api": "^1.16.0",
+    "yargs": "^17.7.2"
+  }
+}
