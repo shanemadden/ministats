@@ -25,7 +25,7 @@ const client = new InfluxDB({ url: url, token: token });
 
 const sleep = util.promisify(setTimeout);
 
-async function get_leaderboard(api, writeApi) {
+async function get_leaderboard(api, writeApi, tick) {
   let players = 1;
   let checked = 0;
   let tst = new Date();
@@ -39,6 +39,7 @@ async function get_leaderboard(api, writeApi) {
       const point = new Point("gcl")
         .tag("username", user_info.username)
         .intField("value", user_info.gcl)
+        .intField("tick", tick)
         .timestamp(tst);
       writeApi.writePoint(point);
     }
@@ -47,7 +48,7 @@ async function get_leaderboard(api, writeApi) {
   writeApi.flush();
 }
 
-async function get_scoreboard(api, writeApi) {
+async function get_scoreboard(api, writeApi, tick) {
   let players = 1;
   let checked = 0;
   let tst = new Date();
@@ -62,6 +63,7 @@ async function get_scoreboard(api, writeApi) {
         const point = new Point("score")
           .tag("username", user_info.username)
           .intField("value", user_info.score)
+          .intField("tick", tick)
           .timestamp(tst);
         writeApi.writePoint(point);
       }
@@ -74,11 +76,13 @@ async function get_scoreboard(api, writeApi) {
 async function run() {
   const api = await ScreepsAPI.fromConfig(argv.server);
   const writeApi = client.getWriteApi(org, bucket);
+  let tick;
   api.socket.connect();
   // watch a random highway room, allowing us to get at what the current tick number is
   // when it sends updates
   api.socket.subscribe(`room:shardSeason/${WATCH_ROOM}`, (event) => {
     if (event.data.gameTime) {
+      tick = event.data.gameTime;
       const point = new Point("tick")
         .intField("value", event.data.gameTime)
         .timestamp(new Date());
@@ -89,8 +93,10 @@ async function run() {
   while (true) {
     // let r = await api.raw.game.shards.info();
     // console.log(r.shards[0].lastTicks);
-    get_leaderboard(api, writeApi);
-    get_scoreboard(api, writeApi);
+    if (tick) {
+      get_leaderboard(api, writeApi, tick);
+      get_scoreboard(api, writeApi, tick);
+    }
     await sleep(INTERVAL);
   }
 }
